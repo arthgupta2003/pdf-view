@@ -45,6 +45,7 @@ export default function Test() {
   return (
     <div className="flex justify-center bg-slate-500 pt-10">
       <div className="max-w-screen-lg w-full">
+        <h1 class="text-5xl font-bold p-5 flex justify-center text-white">Next.js demo for react-pdf</h1>
         <div className="flex justify-center mb-4">
           <input
             type="text"
