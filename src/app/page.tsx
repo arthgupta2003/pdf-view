@@ -8,11 +8,10 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url,
 ).toString();
 
-const samplePDF = "http://localhost:55845/physicscredit.pdf";
-
 export default function Test() {
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
+  const [pdfUrl, setPdfUrl] = useState(""); 
 
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
@@ -34,9 +33,34 @@ export default function Test() {
     changePage(1);
   }
 
+  function handlePdfUrlChange(event) {
+    setPdfUrl(event.target.value);
+  }
+
+  function handleLoadPdf() {
+    setNumPages(null);
+    setPageNumber(1);
+  }
+
   return (
-    <div className="flex justify-center bg-slate-500">
+    <div className="flex justify-center bg-slate-500 pt-10">
       <div className="max-w-screen-lg w-full">
+        <div className="flex justify-center mb-4">
+          <input
+            type="text"
+            value={pdfUrl}
+            onChange={handlePdfUrlChange}
+            className="border border-gray-300 rounded px-4 py-2"
+            placeholder="Enter PDF URL"
+          />
+          <button
+            type="button"
+            onClick={handleLoadPdf}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 ml-2 rounded"
+          >
+            Load PDF
+          </button>
+        </div>
         <div className="flex justify-center mb-4">
           <p className="text-white">
             Page {pageNumber || '--'} of {numPages || '--'}
@@ -55,24 +79,26 @@ export default function Test() {
             type="button"
             disabled={pageNumber >= numPages}
             onClick={nextPage}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-2 rounded"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
             Next
           </button>
         </div>
         <div className="flex justify-center">
-          <Document
-            file={samplePDF}
-            onLoadSuccess={onDocumentLoadSuccess}
-            onError={(e) => console.log(e)}
-          >
-            <Page
-              pageNumber={pageNumber}
-              width={window.innerWidth * 0.5}
-              renderTextLayer={false}
-              renderAnnotationLayer={false}
-            />
-          </Document>
+          {pdfUrl && (
+            <Document
+              file={pdfUrl}
+              onLoadSuccess={onDocumentLoadSuccess}
+              onError={(e) => console.log(e)}
+            >
+              <Page
+                pageNumber={pageNumber}
+                width={window.innerWidth * 0.5}
+                renderTextLayer={false}
+                renderAnnotationLayer={false}
+              />
+            </Document>
+          )}
         </div>
       </div>
     </div>
