@@ -1,26 +1,26 @@
 "use client"
-import React, { useState } from 'react';
-import { Document, Page } from 'react-pdf';
-import { pdfjs } from 'react-pdf';
+import { useState } from 'react';
+import { Document, Page, pdfjs } from 'react-pdf';
+import { stringify } from 'querystring';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
-  import.meta.url,
+  import.meta.url
 ).toString();
 
 export default function Test() {
-  const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [pdfUrl, setPdfUrl] = useState(""); 
+  const [numPages, setNumPages] = useState<number>(0);
+  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [pdfUrl, setPdfUrl] = useState<string>('');
 
-  function onDocumentLoadSuccess({ numPages }) {
+  function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages);
     setPageNumber(1);
   }
 
-  function changePage(offset) {
+  function changePage(offset: number) {
     const newPageNumber = pageNumber + offset;
-    if (newPageNumber >= 1 && newPageNumber <= numPages) {
+    if (numPages !== 0 && newPageNumber >= 1 && newPageNumber <= numPages) {
       setPageNumber(newPageNumber);
     }
   }
@@ -33,19 +33,19 @@ export default function Test() {
     changePage(1);
   }
 
-  function handlePdfUrlChange(event) {
+  function handlePdfUrlChange(event: React.ChangeEvent<HTMLInputElement>) {
     setPdfUrl(event.target.value);
   }
 
   function handleLoadPdf() {
-    setNumPages(null);
+    setNumPages(0);
     setPageNumber(1);
   }
 
   return (
     <div className="flex justify-center bg-slate-500 pt-10">
       <div className="max-w-screen-lg w-full">
-        <h1 class="text-5xl font-bold p-5 flex justify-center text-white">Next.js demo for react-pdf</h1>
+        <h1 className="text-5xl font-bold p-5 flex justify-center text-white">Next.js demo for react-pdf</h1>
         <div className="flex justify-center mb-4">
           <input
             type="text"
@@ -64,7 +64,7 @@ export default function Test() {
         </div>
         <div className="flex justify-center mb-4">
           <p className="text-white">
-            Page {pageNumber || '--'} of {numPages || '--'}
+            Page {pageNumber || '--'} of {numPages === 0 ? '--' : String(numPages)}
           </p>
         </div>
         <div className="flex justify-center mb-4">
